@@ -13,45 +13,88 @@ class MainApp extends StatelessWidget {
       home: Scaffold(
         body: Column(
           children: [
-            Container(
-              height: 100,
-              child: ListView(
+            SizedBox(
+              height: 200,
+              child: ListView.separated(
+                shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
-                children: const [
-                  Image(
-                      image: NetworkImage(
-                          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                      width: 200,
-                      height: 100),
-                  Image(
-                      image: NetworkImage(
-                          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                      width: 200,
-                      height: 100),
-                  Image(
-                      image: NetworkImage(
-                          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                      width: 200,
-                      height: 100),
-                  Image(
-                      image: NetworkImage(
-                          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                      width: 200,
-                      height: 100),
-                  Image(
-                      image: NetworkImage(
-                          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                      width: 200,
-                      height: 100),
-                ],
+                itemCount: 10,
+                itemBuilder: (context, index) => const ItemCard(),
+                separatorBuilder: (context, index) => const SizedBox(width: 10),
               ),
             ),
-            Row(
-              children: [
-                Column(children: [
-                  Container(
-                    height: 800,
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
                     child: ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      children: const [
+                        Image(
+                          image: NetworkImage(
+                              'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                          fit: BoxFit.fitWidth,
+                          width: 200,
+                        ),
+                        Image(
+                            image: NetworkImage(
+                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                            fit: BoxFit.fitWidth,
+                            width: 200),
+                        Image(
+                            image: NetworkImage(
+                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                            fit: BoxFit.fitWidth,
+                            width: 200),
+                        Image(
+                            image: NetworkImage(
+                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                            fit: BoxFit.fitWidth,
+                            width: 200),
+                        Image(
+                            image: NetworkImage(
+                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                            fit: BoxFit.fitWidth,
+                            width: 200),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      children: const [
+                        Image(
+                          image: NetworkImage(
+                              'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                        ),
+                        Image(
+                            image: NetworkImage(
+                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                            width: 200,
+                            height: 100),
+                        Image(
+                            image: NetworkImage(
+                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                            width: 200,
+                            height: 100),
+                        Image(
+                            image: NetworkImage(
+                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                            width: 200,
+                            height: 100),
+                        Image(
+                            image: NetworkImage(
+                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                            width: 200,
+                            height: 100),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       children: const [
                         Image(
@@ -82,25 +125,32 @@ class MainApp extends StatelessWidget {
                       ],
                     ),
                   ),
-                ]),
-                // Column(children: const [
-                //   Text("Column 2 fuck you"),
-                //   Text("Column 2 fuck you"),
-                //   Text("Column 2 fuck you"),
-                //   Text("Column 2 fuck you"),
-                //   Text("Column 2 fuck you"),
-                // ]),
-                // Column(
-                //   children: const [
-                //     Text("Column 3 fuck you"),
-                //     Text("Column 3 fuck you"),
-                //     Text("Column 3 fuck you"),
-                //     Text("Column 3 fuck you"),
-                //     Text("Column 3 fuck you"),
-                //   ],
-                // )
-              ],
-            )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ItemCard extends StatelessWidget {
+  const ItemCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: Card(
+        child: Column(
+          children: const [
+            Text('Hello'),
+            Image(
+              image: NetworkImage(
+                  'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+              fit: BoxFit.fitHeight,
+            ),
           ],
         ),
       ),
