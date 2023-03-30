@@ -19,114 +19,80 @@ class MainApp extends StatelessWidget {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemCount: 10,
-                itemBuilder: (context, index) => const ItemCard(),
-                separatorBuilder: (context, index) => const SizedBox(width: 10),
+                itemBuilder: (context, index) => const BannerCard(),
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
               ),
             ),
             Expanded(
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      children: const [
-                        Image(
-                          image: NetworkImage(
-                              'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                          fit: BoxFit.fitWidth,
-                          width: 200,
+                    child: Column(
+                      children: [
+                        const Text('Hello'),
+                        Expanded(
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: 13,
+                            itemBuilder: (context, index) => const ItemCard(),
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
+                              height: 12,
+                            ),
+                          ),
                         ),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            fit: BoxFit.fitWidth,
-                            width: 200),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            fit: BoxFit.fitWidth,
-                            width: 200),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            fit: BoxFit.fitWidth,
-                            width: 200),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            fit: BoxFit.fitWidth,
-                            width: 200),
                       ],
                     ),
                   ),
                   Expanded(
-                    child: ListView(
+                    child: ListView.separated(
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
-                      children: const [
-                        Image(
-                          image: NetworkImage(
-                              'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                        ),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            width: 200,
-                            height: 100),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            width: 200,
-                            height: 100),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            width: 200,
-                            height: 100),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            width: 200,
-                            height: 100),
-                      ],
+                      itemCount: 3,
+                      itemBuilder: (context, index) => const ItemCard(),
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 12,
+                      ),
                     ),
                   ),
                   Expanded(
-                    child: ListView(
+                    child: ListView.separated(
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
-                      children: const [
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            width: 200,
-                            height: 100),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            width: 200,
-                            height: 100),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            width: 200,
-                            height: 100),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            width: 200,
-                            height: 100),
-                        Image(
-                            image: NetworkImage(
-                                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-                            width: 200,
-                            height: 100),
-                      ],
+                      itemCount: 3,
+                      itemBuilder: (context, index) => const ItemCard(),
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 12,
+                      ),
                     ),
                   ),
                 ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BannerCard extends StatelessWidget {
+  const BannerCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: Card(
+        child: Column(
+          children: const [
+            Text('Hello'),
+            Image(
+              image: NetworkImage(
+                  'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+              fit: BoxFit.fitHeight,
             ),
           ],
         ),
@@ -141,15 +107,26 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 200,
+      height: 100,
       child: Card(
-        child: Column(
-          children: const [
-            Text('Hello'),
-            Image(
-              image: NetworkImage(
-                  'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-              fit: BoxFit.fitHeight,
+        child: Row(
+          children: [
+            const AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Image(
+                image: NetworkImage(
+                    'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+                fit: BoxFit.fitHeight,
+              ),
+            ),
+            Column(
+              children: const [
+                Text('Hello'),
+                Text('Hello'),
+                Text('Hello'),
+                Text('Hello'),
+                Text('Hello'),
+              ],
             ),
           ],
         ),
