@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import ' DetailScreen.dart';
+import 'package:dio/dio.dart';
 
 void main() {
   runApp(const MainApp());
@@ -16,36 +16,131 @@ class MainApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text('STYLiSH'),
         ),
-        body: Column(
-          children: [
-            const SizedBox(height: 30),
-            SizedBox(
-              height: 150,
-              child: ListView.separated(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (context, index) => const BannerItem(),
-                separatorBuilder: (context, index) => const SizedBox(width: 12),
-              ),
-            ),
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  SizedBox(width: 12),
-                  CategoryList(),
-                  SizedBox(width: 12),
-                  CategoryList(),
-                  SizedBox(width: 12),
-                  CategoryList(),
-                  SizedBox(width: 12),
-                ],
-              ),
-            ),
-          ],
-        ),
+        body: const CategoryListView(),
       ),
+    );
+  }
+}
+
+// class CategoryListView extends StatelessWidget {
+class CategoryListView extends StatefulWidget {
+  const CategoryListView({super.key});
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   if (MediaQuery.of(context).size.width >= 600) {
+  //     return const RowLayout();
+  //   } else {
+  //     return const ColumnLayout();
+  //   }
+  // }
+
+  @override
+  State<StatefulWidget> createState() {
+    return CategoryListViewState();
+  }
+}
+
+class CategoryListViewState extends State<CategoryListView> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future:
+          Dio().get('https://api.appworks-school.tw/api/1.0/products/women'),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            // itemCount: snapshot.data?.length,
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return const ListTile(
+                // title: Text(snapshot.data[index]?.title),
+                title: Text('dsafsdfasd'),
+              );
+            },
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+}
+
+class ColumnLayout extends StatelessWidget {
+  const ColumnLayout({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 30),
+        SizedBox(
+          height: 150,
+          child: ListView.separated(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: 10,
+            itemBuilder: (context, index) => const BannerItem(),
+            separatorBuilder: (context, index) => const SizedBox(width: 12),
+          ),
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              SizedBox(width: 12),
+              CategoryList(),
+              SizedBox(width: 12),
+              CategoryList(),
+              SizedBox(width: 12),
+              CategoryList(),
+              SizedBox(width: 12),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class RowLayout extends StatelessWidget {
+  const RowLayout({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 30),
+        SizedBox(
+          height: 150,
+          child: ListView.separated(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: 10,
+            itemBuilder: (context, index) => const BannerItem(),
+            separatorBuilder: (context, index) => const SizedBox(width: 12),
+          ),
+        ),
+        Expanded(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              SizedBox(width: 12),
+              CategoryList(),
+              SizedBox(width: 12),
+              CategoryList(),
+              SizedBox(width: 12),
+              CategoryList(),
+              SizedBox(width: 12),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
