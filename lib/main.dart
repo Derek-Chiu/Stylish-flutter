@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:stylish/model/Product.dart';
 import ' DetailScreen.dart';
 import 'package:dio/dio.dart';
+
+import 'model/ProductListResponse.dart';
 
 void main() {
   runApp(const MainApp());
@@ -37,39 +40,80 @@ class CategoryListView extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return CategoryListViewState();
+    return _CategoryListViewState();
   }
 }
 
-class CategoryListViewState extends State<CategoryListView> {
+class _CategoryListViewState extends State<CategoryListView> {
+  List<String> categories = ['women', 'men', 'accessories'];
+  List<ProductListResponse> products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    print('initState');
+    fetchList();
+  }
+
+  Future<void> fetchList() async {
+    try {
+      for (var category in categories) {
+        print('fetchList: $category');
+        await Dio()
+            .get('https://api.appworks-school.tw/api/1.0/products/$category')
+            .then((value) {
+          ProductListResponse response =
+              ProductListResponse.fromJson(value.data as Map<String, dynamic>);
+          setState(() {
+            print('${products.length}');
+            products.add(response);
+            print('${products.length}');
+          });
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future:
-          Dio().get('https://api.appworks-school.tw/api/1.0/products/women'),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
-            // itemCount: snapshot.data?.length,
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return const ListTile(
-                // title: Text(snapshot.data[index]?.title),
-                title: Text('dsafsdfasd'),
-              );
-            },
-          );
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );
+    print('build');
+    return Text('${products.length}');
+    // if (MediaQuery.of(context).size.width >= 600) {
+    //   return RowLayout(products: products);
+    // } else {
+    //   return ColumnLayout(products: products);
+    // }
+    // return FutureBuilder(
+    //   future: Dio()
+    //       .get('https://api.appworks-school.tw/api/1.0/products/$_category'),
+    //   builder: (context, snapshot) {
+    //     if (snapshot.hasData) {
+    //       ProductListResponse response = ProductListResponse.fromJson(
+    //           snapshot.data?.data as Map<String, dynamic>);
+    //       return ListView.builder(
+    //       itemCount: response.data.length,
+    //       itemBuilder: (context, index) {
+    //         return ListTile(
+    //           title: Text(response.data[index].title),
+    //         );
+    //       },
+    //       );
+    //     } else {
+    //       return const Center(child: CircularProgressIndicator());
+    //     }
+    //   },
+    // );
   }
 }
 
 class ColumnLayout extends StatelessWidget {
-  const ColumnLayout({
+  List<ProductListResponse> products = [];
+
+  ColumnLayout({
     super.key,
+    required this.products,
   });
 
   @override
@@ -90,14 +134,9 @@ class ColumnLayout extends StatelessWidget {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              SizedBox(width: 12),
-              CategoryList(),
-              SizedBox(width: 12),
-              CategoryList(),
-              SizedBox(width: 12),
-              CategoryList(),
-              SizedBox(width: 12),
+            children: [
+              // for (var element in pruducts) const SizedBox(width: 12),
+              for (var element in products) CategoryList(categoryData: element),
             ],
           ),
         ),
@@ -107,9 +146,9 @@ class ColumnLayout extends StatelessWidget {
 }
 
 class RowLayout extends StatelessWidget {
-  const RowLayout({
-    super.key,
-  });
+  List<ProductListResponse> products = [];
+
+  RowLayout({super.key, required this.products});
 
   @override
   Widget build(BuildContext context) {
@@ -129,14 +168,9 @@ class RowLayout extends StatelessWidget {
         Expanded(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              SizedBox(width: 12),
-              CategoryList(),
-              SizedBox(width: 12),
-              CategoryList(),
-              SizedBox(width: 12),
-              CategoryList(),
-              SizedBox(width: 12),
+            children: [
+              // for (var element in pruducts) const SizedBox(width: 12),
+              for (var element in products) CategoryList(categoryData: element),
             ],
           ),
         ),
@@ -146,8 +180,11 @@ class RowLayout extends StatelessWidget {
 }
 
 class CategoryList extends StatelessWidget {
-  const CategoryList({
+  ProductListResponse categoryData;
+
+  CategoryList({
     super.key,
+    required this.categoryData,
   });
 
   @override
@@ -160,8 +197,9 @@ class CategoryList extends StatelessWidget {
             child: ListView.separated(
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
-              itemCount: 13,
-              itemBuilder: (context, index) => const CategoryItem(),
+              itemCount: categoryData.data.length,
+              itemBuilder: (context, index) =>
+                  CategoryItem(product: categoryData.data[index]),
               separatorBuilder: (context, index) => const SizedBox(
                 height: 12,
               ),
@@ -193,7 +231,12 @@ class BannerItem extends StatelessWidget {
 }
 
 class CategoryItem extends StatelessWidget {
-  const CategoryItem({Key? key}) : super(key: key);
+  Product product;
+
+  CategoryItem({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -215,16 +258,15 @@ class CategoryItem extends StatelessWidget {
         margin: const EdgeInsets.all(0),
         padding: const EdgeInsets.all(0),
         child: Row(children: [
-          const Image(
-            image: NetworkImage(
-                'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
+          Image(
+            image: NetworkImage(product!.mainImage),
             fit: BoxFit.fitHeight,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text('UNIQLO 特級輕量羽絨外套'),
-              Text('NT\$ 1,299'),
+            children: [
+              Text(product!.title),
+              Text('NT\$ ${product!.price}}'),
             ],
           ),
         ]),

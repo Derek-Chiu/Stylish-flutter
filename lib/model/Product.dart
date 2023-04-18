@@ -36,8 +36,7 @@ class Product {
     required this.images,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
-    final data = json['data'];
+  factory Product.fromJson(Map<String, dynamic> data) {
     final colors = (data['colors'] as List<dynamic>).map((color) {
       return Color.fromJson(color);
     }).toList();
