@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stylish/model/Product.dart';
+import 'package:stylish/model/campaign_response.dart';
 import ' DetailScreen.dart';
 import 'package:dio/dio.dart';
 
@@ -29,15 +30,6 @@ class MainApp extends StatelessWidget {
 class CategoryListView extends StatefulWidget {
   const CategoryListView({super.key});
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   if (MediaQuery.of(context).size.width >= 600) {
-  //     return const RowLayout();
-  //   } else {
-  //     return const ColumnLayout();
-  //   }
-  // }
-
   @override
   State<StatefulWidget> createState() {
     return _CategoryListViewState();
@@ -51,60 +43,33 @@ class _CategoryListViewState extends State<CategoryListView> {
   @override
   void initState() {
     super.initState();
-    print('initState');
     fetchList();
   }
 
   Future<void> fetchList() async {
     try {
       for (var category in categories) {
-        print('fetchList: $category');
         await Dio()
             .get('https://api.appworks-school.tw/api/1.0/products/$category')
             .then((value) {
           ProductListResponse response =
               ProductListResponse.fromJson(value.data as Map<String, dynamic>);
-          setState(() {
-            print('setState');
-            products.add(response);
-            print('${products.length}');
-          });
+          products.add(response);
         });
       }
     } catch (e) {
       print('error: $e');
     }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    print('build');
-    // return Text('${products.length}');
     if (MediaQuery.of(context).size.width >= 600) {
       return RowLayout(products: products);
     } else {
       return ColumnLayout(products: products);
     }
-    // return FutureBuilder(
-    //   future: Dio()
-    //       .get('https://api.appworks-school.tw/api/1.0/products/$_category'),
-    //   builder: (context, snapshot) {
-    //     if (snapshot.hasData) {
-    //       ProductListResponse response = ProductListResponse.fromJson(
-    //           snapshot.data?.data as Map<String, dynamic>);
-    //       return ListView.builder(
-    //       itemCount: response.data.length,
-    //       itemBuilder: (context, index) {
-    //         return ListTile(
-    //           title: Text(response.data[index].title),
-    //         );
-    //       },
-    //       );
-    //     } else {
-    //       return const Center(child: CircularProgressIndicator());
-    //     }
-    //   },
-    // );
   }
 }
 
@@ -120,17 +85,7 @@ class ColumnLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 30),
-        SizedBox(
-          height: 150,
-          child: ListView.separated(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: 10,
-            itemBuilder: (context, index) => const BannerItem(),
-            separatorBuilder: (context, index) => const SizedBox(width: 12),
-          ),
-        ),
+        const BannerListView(),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,22 +109,11 @@ class RowLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 30),
-        SizedBox(
-          height: 150,
-          child: ListView.separated(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: 10,
-            itemBuilder: (context, index) => const BannerItem(),
-            separatorBuilder: (context, index) => const SizedBox(width: 12),
-          ),
-        ),
+        const BannerListView(),
         Expanded(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // for (var element in pruducts) const SizedBox(width: 12),
               for (var element in products) CategoryList(categoryData: element),
             ],
           ),
@@ -180,6 +124,11 @@ class RowLayout extends StatelessWidget {
 }
 
 class CategoryList extends StatelessWidget {
+  final Map<String, String> categoryMap = {
+    'women': '女裝',
+    'men': '男裝',
+    'accessories': '配件'
+  };
   ProductListResponse categoryData;
 
   CategoryList({
@@ -192,7 +141,8 @@ class CategoryList extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
-          const Text('Hello', style: TextStyle(fontSize: 20, height: 3)),
+          Text(categoryMap[categoryData.data[0].category] ?? 'Hello',
+              style: const TextStyle(fontSize: 20, height: 3)),
           Expanded(
             child: ListView.separated(
               shrinkWrap: true,
@@ -211,20 +161,75 @@ class CategoryList extends StatelessWidget {
   }
 }
 
+class BannerListView extends StatefulWidget {
+  const BannerListView({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _BannerListState();
+  }
+}
+
+class _BannerListState extends State<BannerListView> {
+  CampaignResponse campaignResponse = CampaignResponse(data: []);
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBannerList();
+  }
+
+  Future<void> fetchBannerList() async {
+    try {
+      await Dio()
+          .get('https://api.appworks-school.tw/api/1.0/marketing/campaigns')
+          .then((value) {
+        setState(() {
+          campaignResponse =
+              CampaignResponse.fromJson(value.data as Map<String, dynamic>);
+        });
+      });
+    } catch (e) {
+      print('fetch banner error: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 30),
+        SizedBox(
+          height: 300,
+          child: ListView.separated(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: campaignResponse.data.length,
+            itemBuilder: (context, index) =>
+                BannerItem(item: campaignResponse.data[index]),
+            separatorBuilder: (context, index) => const SizedBox(width: 12),
+          ),
+        )
+      ],
+    );
+  }
+}
+
 class BannerItem extends StatelessWidget {
-  const BannerItem({Key? key}) : super(key: key);
+  CampaignItem item;
+
+  BannerItem({
+    Key? key,
+    required this.item,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: const AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Image(
-          image: NetworkImage(
-              'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6rbe1FVWIoZGgZdH.jpg'),
-          fit: BoxFit.fitWidth,
-        ),
+      child: Image(
+        image: NetworkImage(item.picture),
+        fit: BoxFit.fitWidth,
       ),
     );
   }
@@ -265,7 +270,7 @@ class CategoryItem extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(product.title!),
+              Text(product.title),
               Text('NT\$ ${product.price}'),
             ],
           ),
