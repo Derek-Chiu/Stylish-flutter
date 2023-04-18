@@ -65,26 +65,26 @@ class _CategoryListViewState extends State<CategoryListView> {
           ProductListResponse response =
               ProductListResponse.fromJson(value.data as Map<String, dynamic>);
           setState(() {
-            print('${products.length}');
+            print('setState');
             products.add(response);
             print('${products.length}');
           });
         });
       }
     } catch (e) {
-      print(e);
+      print('error: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     print('build');
-    return Text('${products.length}');
-    // if (MediaQuery.of(context).size.width >= 600) {
-    //   return RowLayout(products: products);
-    // } else {
-    //   return ColumnLayout(products: products);
-    // }
+    // return Text('${products.length}');
+    if (MediaQuery.of(context).size.width >= 600) {
+      return RowLayout(products: products);
+    } else {
+      return ColumnLayout(products: products);
+    }
     // return FutureBuilder(
     //   future: Dio()
     //       .get('https://api.appworks-school.tw/api/1.0/products/$_category'),
@@ -259,14 +259,14 @@ class CategoryItem extends StatelessWidget {
         padding: const EdgeInsets.all(0),
         child: Row(children: [
           Image(
-            image: NetworkImage(product!.mainImage),
+            image: NetworkImage(product.mainImage),
             fit: BoxFit.fitHeight,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(product!.title),
-              Text('NT\$ ${product!.price}}'),
+              Text(product.title!),
+              Text('NT\$ ${product.price}'),
             ],
           ),
         ]),
