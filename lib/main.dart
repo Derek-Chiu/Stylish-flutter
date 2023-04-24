@@ -98,6 +98,46 @@ class _BatteryLevelViewState extends State<BatteryLevelView> {
   }
 }
 
+class TapPayMessageView extends StatefulWidget {
+  const TapPayMessageView({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _TapPayMessageState();
+  }
+}
+
+class _TapPayMessageState extends State<TapPayMessageView> {
+  static const platform = MethodChannel('test_tappay');
+  String _tappayMessage = 'TapPay Message: unknown.';
+
+  @override
+  void initState() {
+    super.initState();
+    _inputCreditCard();
+  }
+
+  Future<void> _inputCreditCard() async {
+    String message;
+
+    try {
+      final String result = await platform.invokeMethod('tappay');
+      message = result;
+    } on PlatformException catch (e) {
+      message = e.message ?? '';
+    }
+
+    setState(() {
+      _tappayMessage = message;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('TapPay Message: $_tappayMessage');
+  }
+}
+
 class _CategoryListViewState extends State<CategoryListView> {
   List<String> categories = ['women', 'men', 'accessories'];
   List<ProductListResponse> products = [];
@@ -262,6 +302,8 @@ class _BannerListState extends State<BannerListView> {
       children: [
         const SizedBox(height: 10),
         const BatteryLevelView(),
+        const SizedBox(height: 10),
+        const TapPayMessageView(),
         const SizedBox(height: 30),
         SizedBox(
           height: 300,
