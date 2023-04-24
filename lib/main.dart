@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stylish/model/Product.dart';
 import 'package:stylish/model/campaign_response.dart';
-import ' DetailScreen.dart';
+import 'DetailScreen.dart';
 import 'package:dio/dio.dart';
 
 import 'model/ProductListResponse.dart';
@@ -33,6 +34,67 @@ class CategoryListView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _CategoryListViewState();
+  }
+}
+
+class BatteryLevelView extends StatefulWidget {
+  const BatteryLevelView({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _BatteryLevelViewState();
+  }
+}
+
+class _BatteryLevelViewState extends State<BatteryLevelView> {
+  static const MethodChannel methodChannel =
+      MethodChannel('samples.flutter.io/battery');
+  // static const EventChannel eventChannel =
+  //     EventChannel('samples.flutter.io/charging');
+
+  String _batteryLevel = 'Battery level: unknown.';
+  // String _chargingStatus = 'Battery status: unknown.';
+
+  @override
+  void initState() {
+    super.initState();
+    _getBatteryLevel();
+    // eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
+  }
+
+  Future<void> _getBatteryLevel() async {
+    String batteryLevel;
+    try {
+      final int? result = await methodChannel.invokeMethod('getBatteryLevel');
+      batteryLevel = 'Battery level: $result%.';
+    } on PlatformException catch (e) {
+      if (e.code == 'NO_BATTERY') {
+        batteryLevel = 'No battery.';
+      } else {
+        batteryLevel = 'Failed to get battery level.';
+      }
+    }
+    setState(() {
+      _batteryLevel = batteryLevel;
+    });
+  }
+
+  // void _onEvent(Object? event) {
+  //   setState(() {
+  //     _chargingStatus =
+  //         "Battery status: ${event == 'charging' ? '' : 'dis'}charging.";
+  //   });
+  // }
+
+  // void _onError(Object error) {
+  //   setState(() {
+  //     _chargingStatus = 'Battery status: unknown.';
+  //   });
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(_batteryLevel, key: const Key('Battery level label'));
   }
 }
 
@@ -198,6 +260,8 @@ class _BannerListState extends State<BannerListView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const SizedBox(height: 10),
+        const BatteryLevelView(),
         const SizedBox(height: 30),
         SizedBox(
           height: 300,
