@@ -2,11 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.stylish">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
         android:label="stylish"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyApK5boVbxKQ5zRy6C1nRjR9yR-e7pCHJE"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
